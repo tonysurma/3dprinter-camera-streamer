@@ -12,8 +12,6 @@ SNAPSHOTURL="http://127.0.0.1:8080/snapshot"
 
 sleep "5"
 
-source venv/bin/activate
-
 while true; do
     now=$(date)
     force_run="true"
