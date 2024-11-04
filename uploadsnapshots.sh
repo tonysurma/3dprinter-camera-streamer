@@ -9,7 +9,7 @@ while true; do
     #echo "$response_code was received"
 
     if [ "$FORCE_RUN" == "true" ]; then
-        echo "$now: force run is resetting status"
+        echo "$now: force run is overriding status of $response_code"
         response_code="FORCED"
     fi
     if [ "$response_code" == "PYFAIL" ]; then
