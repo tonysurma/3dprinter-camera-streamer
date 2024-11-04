@@ -16,10 +16,15 @@ source venv/bin/activate
 
 while true; do
     now=$(date)
-
+    force_run="true"
+    
     response_code=$(python3 ./printer_check.py)
     #echo "$response_code was received"
-
+    
+    if [ "$force_run" == "true" ]; then
+        echo "$now: force run is resetting status"
+        response_code="FORCED"
+    fi
     if [ "$response_code" == "PYFAIL" ]; then
         echo "$now: printer_check.py returned an error. Retrying after ${IDLE_DELAY_SECONDS}s..."
 
