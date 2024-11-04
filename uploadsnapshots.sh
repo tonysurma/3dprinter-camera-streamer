@@ -1,25 +1,14 @@
 #!/bin/bash
 
-# Set default values for environment variables
-: "${HTTP_URL:=https://webcam.connect.prusa3d.com/c/snapshot}"
-: "${DELAY_SECONDS:=20}"
-: "${LONG_DELAY_SECONDS:=60}"
-: "${IDLE_DELAY_SECONDS:=120}"
-
-FINGERPRINT="???"
-TOKEN="???"
-SNAPSHOTURL="http://127.0.0.1:8080/snapshot"
-
-sleep "5"
+sleep "$START_DELAY_SECONDS"
 
 while true; do
     now=$(date)
-    force_run="true"
-    
+
     response_code=$(python3 ./printer_check.py)
     #echo "$response_code was received"
-    
-    if [ "$force_run" == "true" ]; then
+
+    if [ "$FORCE_RUN" == "true" ]; then
         echo "$now: force run is resetting status"
         response_code="FORCED"
     fi
@@ -37,14 +26,14 @@ while true; do
             # Set delay to the longest value
             DELAY=$IDLE_DELAY_SECONDS
         else
-            echo "$now: printer_check.py showed printer is $response_code. Uploading snapshot..."
+            echo "$now: printer_check.py showed printer is $response_code. Capturing snapshot..."
 
             # grab from streamer
             curl -s "$SNAPSHOTURL" -o /tmp/output.jpg
 
             # If no error, upload it.
             if [ $? -eq 0 ]; then
-                # echo "$now: Uploading snapshot..."
+                echo "$now: Uploading snapshot..."
 
                 datestr=$(date)
                 convert /tmp/output.jpg -quality 85 -filter lanczos -resize 800 -pointsize 18 -fill white -undercolor '#00000080' -gravity southwest -annotate +10+10 "${datestr}" /tmp/annotated.jpg
@@ -58,7 +47,8 @@ while true; do
                     --data-binary "@/tmp/annotated.jpg" \
                     -s \
                     --compressed
-
+                echo ""
+                
                 # Reset delay to the normal value
                 DELAY=$DELAY_SECONDS
             else
