@@ -18,8 +18,9 @@ export IDLE_DELAY_SECONDS=120
 #Debug/Testing Values
 export FORCE_RUN=true
 
-#Run the Sub Script to Loop Snapshot Uploads
-cd 3dprinter-camera-streamer
+#enter the python venv before running script
 source venv/bin/activate
 
+#Run the Sub Script to Loop Snapshot Uploads
+cd 3dprinter-camera-streamer
 ./uploadsnapshots.sh
